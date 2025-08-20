@@ -1,0 +1,84 @@
+{% extends 'base/base_dashboard.html' %}
+
+{% block mytitle %}
+    View Quiz - {{ quiz.Quiz_Name }}
+{% endblock %}
+
+{% block mycontent %}
+<div class="quiz-details-container">
+    <div class="quiz-details-box">
+        <h2>{{ quiz.Quiz_Name }}</h2>
+        <p><strong>Quiz ID:</strong> {{ quiz.Quiz_ID }}</p>
+        <p><strong>Subject:</strong> {{ quiz.Subject_name }}</p>
+        <p><strong>Chapter:</strong> {{ quiz.Chapter_Name }}</p>
+        <p><strong>Number of Questions:</strong> {{ quiz.num_questions }}</p>
+        <p><strong>Date:</strong> {{ quiz.Quiz_Date }}</p>
+        <p><strong>Time Duration:</strong> {{ quiz.Quiz_Time }}</p>
+        <button onclick="window.history.back()" class="btn btn-close"></button>
+    </div>
+</div>
+<style>
+    .quiz-details-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 80vh;
+        background: linear-gradient(to bottom, #212121, #424242);
+    }
+    .quiz-details-box {
+        width: 480px;
+        padding: 30px;
+        border-radius: 12px;
+        background: #1a1a1a;
+        box-shadow: 0px 8px 30px rgba(0, 0, 0, 0.5);
+        text-align: center;
+        color: #e0e0e0;
+        transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+        border: 1px solid #616161;
+    }
+    .quiz-details-box:hover {
+        transform: translateY(-15px);
+        box-shadow: 0px 15px 40px rgba(0, 0, 0, 0.2);
+    }
+    .quiz-details-box h2 {
+        font-size: 2.5rem;
+        color: #00ff80;
+        font-weight: 600;
+        margin-bottom: 20px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+    .quiz-details-box p {
+        font-size: 1.2rem;
+        color: #b0b0b0;
+        margin: 15px 0;
+        line-height: 1.8;
+        font-family: 'Courier New', Courier, monospace;
+    }
+    .btn-close {
+        margin-top: 30px;
+        padding: 14px 40px;
+        font-size: 1.1rem;
+        background-color: #00ff80;
+        color: black;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+    }
+    .btn-close:hover {
+        background-color: #00cc66;
+        transform: scale(1.1);
+        box-shadow: 0 0 10px #00ff80, 0 0 20px #00ff80;
+    }
+    .btn-close:active {
+        background-color: #00994d;
+    }
+    .btn-close:focus {
+        outline: none;
+    }
+    .quiz-details-box {
+        border-image: linear-gradient(to right, #00ff80, #00cc66) 1;
+    }
+</style>
+{% endblock %}

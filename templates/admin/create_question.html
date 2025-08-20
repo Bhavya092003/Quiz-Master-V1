@@ -1,0 +1,181 @@
+{% extends 'base/base_dashboard.html' %}
+
+{% block mytitle %}
+    Add Questions
+{% endblock %}
+
+{% block mycontent %}
+<style>
+    body {
+        background: #f7f8fa;
+        font-family: 'Arial', sans-serif;
+        margin: 0;
+        padding: 0;
+    }
+    .container {
+        max-width: 800px;
+        margin-top: 3rem;
+    }
+    .card {
+        border-radius: 12px;
+        box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+        background-color: #fff;
+        padding: 2rem;
+    }
+    .card:hover {
+        box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.15);
+    }
+    .card-body {
+        padding: 2rem;
+    }
+    .form-label {
+        font-weight: bold;
+        color: #333;
+    }
+    .form-control {
+        border-radius: 8px;
+        box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    .form-control:focus {
+        box-shadow: 0 0 0 0.2rem rgba(66, 153, 225, 0.5);
+        border-color: #66b3ff;
+    }
+    .btn {
+        border-radius: 8px;
+        padding: 10px 20px;
+        font-weight: bold;
+        font-size: 16px;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .btn:hover {
+        transform: scale(1.05);
+        box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    .btn-primary {
+        background-color: #007bff;
+        border: none;
+    }
+    .btn-primary:hover {
+        background-color: #0056b3;
+    }
+    .btn-secondary {
+        background-color: #6c757d;
+        border: none;
+    }
+    .btn-secondary:hover {
+        background-color: #495057;
+    }
+    .mb-3 {
+        margin-bottom: 1.5rem;
+    }
+    .form-select {
+        border-radius: 8px;
+        box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    .form-select:focus {
+        border-color: #66b3ff;
+    }
+    .options-section {
+        background-color: #f9f9f9;
+        border-radius: 12px;
+        padding: 2rem;
+    }
+    .options-section h4 {
+        font-size: 1.25rem;
+        font-weight: bold;
+        margin-bottom: 1rem;
+    }
+    html, body {
+        overflow-x: hidden;
+        max-width: 100%;
+        box-sizing: border-box;
+    }
+    .row {
+        margin-bottom: 1.5rem;
+    }
+</style>
+<div class="text-center mb-2">
+    <h1 class="fw-bold">New Question</h1>
+</div>
+<div class="container">
+    <form action="{{ url_for('new_question', quiz_id=quiz.Quiz_ID) }}" method="POST">
+        <input type="hidden" name="quiz_id" value="{{ quiz.Quiz_ID }}">
+        <div class="card shadow-lg mb-4">
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label for="subject_id"><strong>Subject</strong></label>
+                    <input type="text" class="form-control" name="subject_id" value="{{ subject.Subject_name }}" readonly>
+                </div>
+                <div class="col-md-6">
+                    <label for="chapter_id"><strong>Chapter</strong></label>
+                    <input type="text" class="form-control" name="chapter_id" value="{{ chapter.Chapter_Name }}" readonly>
+                </div>
+            </div>
+            <div class="mb-3">
+                <label for="statement"><strong>Question Statement</strong></label>
+                <input type="text" class="form-control" name="statement" required>
+            </div>
+        </div>
+        <div class="card options-section">
+            <h4>Single Correct Option</h4>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="option1">Option 1</label>
+                    <input type="text" class="form-control" id="option1" name="option1" oninput="updateDropdown()" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="option2">Option 2</label>
+                    <input type="text" class="form-control" id="option2" name="option2" oninput="updateDropdown()" required>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="option3">Option 3</label>
+                    <input type="text" class="form-control" id="option3" name="option3" oninput="updateDropdown()">
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="option4">Option 4</label>
+                    <input type="text" class="form-control" id="option4" name="option4" oninput="updateDropdown()">
+                </div>
+            </div>
+            <div class="mb-3">
+                <label for="correctOption">Correct Option</label>
+                <select name="correctOption" id="correctOption" class="form-select" required>
+                    <option value="">Select Correct Option</option>
+                </select>
+            </div>
+        </div>
+        <div class="d-flex justify-content-between mt-3">
+            <input type="submit" class="btn btn-primary" value="Save">
+            <button type="button" onclick="clearFormAndGoBack()" class="btn btn-secondary">Cancel</button>
+        </div>
+    </form>
+</div>
+<script>
+    function clearFormAndGoBack() {
+        window.location.href = "/admin-dashboard/quiz_dashboard";
+    }
+    function updateDropdown() {
+        let options = [
+            document.getElementById("option1").value.trim(),
+            document.getElementById("option2").value.trim(),
+            document.getElementById("option3").value.trim(),
+            document.getElementById("option4").value.trim()
+        ];
+        let dropdown = document.getElementById("correctOption");
+        let selectedValue = dropdown.value;
+        dropdown.innerHTML = '<option value="">Select Correct Option</option>';
+        options.forEach((opt, index) => {
+            if (opt !== "") {
+                let optionElement = document.createElement("option");
+                optionElement.value = index + 1;
+                optionElement.textContent = `Option ${index + 1}: ${opt}`;
+                if (optionElement.value === selectedValue) {
+                    optionElement.selected = true;
+                }
+                dropdown.appendChild(optionElement);
+            }
+        });
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,19 @@
+# Python
+__pycache__/
+*.pyc
+
+# SQLite DB
+*.db
+
+# Environment variables
+.env
+
+# VSCode / IDE
+.vscode/
+.idea/
+
+#Documentation
+.pdf
+
+static
+venv

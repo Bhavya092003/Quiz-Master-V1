@@ -1,0 +1,104 @@
+{% extends 'base/base_dashboard.html' %}
+
+{% block mytitle %}
+    Edit Question
+{% endblock %}
+
+{% block mycontent %}
+<style>
+    body {
+        background-color: #f7f8fa;
+        font-family: 'Arial', sans-serif;
+    }
+    .container {
+        max-width: 700px;
+        margin-top: 3rem;
+    }
+    .card {
+        border-radius: 12px;
+        box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    .form-label {
+        font-weight: bold;
+    }
+    .btn {
+        border-radius: 8px;
+        padding: 10px 20px;
+        font-weight: bold;
+        font-size: 16px;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .btn:hover {
+        transform: scale(1.05);
+        box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    .btn-primary {
+        background-color: #007bff;
+        border: none;
+        color: white;
+    }
+    .btn-primary:hover {
+        background-color: #0056b3;
+    }
+    .btn-secondary {
+        background-color: #6c757d;
+        border: none;
+        color: white;
+    }
+    .btn-secondary:hover {
+        background-color: #5a6268;
+    }
+    .mb-3 {
+        margin-bottom: 1.5rem;
+    }
+    textarea.form-control, input.form-control {
+        border-radius: 8px;
+        padding: 10px;
+        font-size: 16px;
+        width: 100%;
+    }
+    .d-flex {
+        gap: 1rem;
+    }
+</style>
+<div class="container mt-4">
+    <h2 class="fw-bold text-center mb-4">Edit Question</h2>
+    <div class="card p-4 shadow-lg mx-auto">
+        <form method="POST">
+            <div class="mb-3">
+                <label class="form-label">Question Statement</label>
+                <textarea name="question_statement" class="form-control" required>{{ question.Question_Statement }}</textarea>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Option 1</label>
+                <input type="text" name="option1" class="form-control" value="{{ question.Option1 }}" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Option 2</label>
+                <input type="text" name="option2" class="form-control" value="{{ question.Option2 }}" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Option 3</label>
+                <input type="text" name="option3" class="form-control" value="{{ question.Option3 }}" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Option 4</label>
+                <input type="text" name="option4" class="form-control" value="{{ question.Option4 }}" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Correct Option (1-4)</label>
+                <input type="number" name="correct_option" class="form-control" value="{{ question.Correct_Option }}" min="1" max="4" required>
+            </div>
+            <div class="d-flex justify-content-between">
+                <button type="submit" class="btn btn-primary">Update Question</button>
+                <button type="button" class="btn btn-secondary" onclick="goBack()">Cancel</button>
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+    function goBack() {
+        window.location.href = "{{ url_for('view_questions', quiz_id=quiz_id) }}";
+    }
+</script>
+{% endblock %}

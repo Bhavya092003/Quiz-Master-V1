@@ -1,0 +1,9 @@
+Before running the "app.py" file, it is required to run the "create_admin_before_running_app.py"
+as it is responsible for creation of the admin.
+
+In my app, the first user created (user_ID=1) will be considered as the admin.
+
+Hence "create_admin_before_running_app.py" file must be run first for admin creation.
+
+
+ALSO I HAVE REMOVED THE STATIC FOLDER(BOOKS, PENCIL AND EXAM SHEET IMAGES ON LOGIN PAGE) DUE TO COMPRESSION ISSUES

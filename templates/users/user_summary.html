@@ -1,0 +1,137 @@
+{% extends 'base/base_dashboard.html' %}
+
+{% block mytitle %}
+    Summary Charts
+{% endblock %}
+
+{% block mycontent %}
+<div class="container mt-5">
+    <h2 class="text-center mb-5" style="font-family: 'Roboto', sans-serif; font-weight: bold; color: #00bcd4; font-size: 2.5rem;">Summary Charts</h2>
+    <div class="row">
+        <div class="col-md-6 mb-4">
+            <h5 class="text-center" style="color: #00bcd4; font-size: 1.5rem; font-weight: bold;">Subject-wise Quizzes</h5>
+            <div class="chart-container" style="background-color: #1e1e1e; border-radius: 15px; padding: 15px;">
+                <canvas id="subjectChart"></canvas>
+            </div>
+        </div>
+        <div class="col-md-6 d-flex justify-content-center mb-4">
+            <div class="chart-container" style="background-color: #1e1e1e; border-radius: 15px; padding: 15px;">
+                <h5 class="text-center" style="color: #00bcd4; font-size: 1.5rem; font-weight: bold;">Quizzes Attempted Per Month</h5>
+                <canvas id="monthChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    var subjectData = {
+        labels: {{ attempted_subjects | tojson | safe }},
+        datasets: [{
+            label: "Quizzes Attempted",
+            data: {{ attempted_quiz_counts | default([]) | tojson }},
+            backgroundColor: ["#36A2EB", "#4CAF50", "#FF6384", "#FF9F40", "#FFCD56", "#F39C12"],
+            borderWidth: 1,
+            borderColor: "#ffffff",
+            hoverBorderColor: "#00bcd4",
+            hoverBackgroundColor: "#00bcd4",
+        }]
+    };
+    var ctx1 = document.getElementById("subjectChart").getContext("2d");
+    new Chart(ctx1, {
+        type: "bar",
+        data: subjectData,
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        color: '#ffffff',
+                    },
+                },
+                x: {
+                    ticks: {
+                        color: '#ffffff',
+                    },
+                },
+            },
+            plugins: {
+                legend: {
+                    labels: {
+                        color: '#ffffff',
+                    },
+                },
+                tooltip: {
+                    backgroundColor: '#333',
+                    titleColor: '#fff',
+                    bodyColor: '#fff',
+                },
+            },
+        }
+    });
+    var monthData = {
+        labels: {{ months | tojson }},
+        datasets: [{
+            data: {{ attempts | tojson }},
+            backgroundColor: ["#FF9999", "#66B3FF", "#99FF99", "#FFCC99", "#FF6347", "#4E73DF"],
+            hoverOffset: 4,
+        }]
+    };
+    var ctx2 = document.getElementById("monthChart").getContext("2d");
+    new Chart(ctx2, {
+        type: "pie",
+        data: monthData,
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    labels: {
+                        color: '#ffffff',
+                    },
+                },
+                tooltip: {
+                    backgroundColor: '#333',
+                    titleColor: '#fff',
+                    bodyColor: '#fff',
+                },
+            },
+        }
+    });
+</script>
+<style>
+    html, body {
+        overflow: hidden;
+        height: 100%;
+    }
+    .container {
+        background-color: #121212;
+        padding: 40px;
+        border-radius: 15px;
+        box-sizing: border-box;
+        overflow: hidden;
+    }
+    .chart-container {
+        border-radius: 15px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+        padding: 20px;
+        background-color: #1e1e1e;
+    }
+    h5 {
+        font-size: 1.4rem;
+        font-weight: bold;
+        text-transform: uppercase;
+    }
+    .chart-container canvas {
+        border-radius: 12px;
+        transition: transform 0.3s ease;
+    }
+    .chart-container canvas:hover {
+        transform: scale(1.05);
+    }
+    @media (max-width: 768px) {
+        .chart-container {
+            padding: 10px;
+        }
+    }
+</style>
+{% endblock %}

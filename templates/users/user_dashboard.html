@@ -1,0 +1,151 @@
+{% extends 'base/base_dashboard.html' %}
+
+{% block mytitle %}
+    User Dashboard
+{% endblock %}
+
+{% block mycontent %}
+<div class="d-flex justify-content-center align-items-center" style="min-height: 80vh; background-color: #f5f5f5; overflow-x: hidden;">
+    <div class="card w-75 p-5 shadow-lg rounded-lg" style="background-color: #fff; border-radius: 16px; box-shadow: 0px 15px 30px rgba(0, 0, 0, 0.1);">
+        <h2 class="text-center mb-5" style="font-family: 'Roboto', sans-serif; color: #00aaff; font-weight: 700; font-size: 2.8rem; text-transform: uppercase;">Available Quizzes</h2>
+        <div class="d-flex justify-content-between mb-4">
+            <div class="filter-group">
+                <label for="subjectFilter" class="form-label" style="font-size: 1.2rem; color: #333; font-weight: bold;">Select Subject:</label>
+                <select id="subjectFilter" class="form-select form-select-lg" style="border-radius: 12px; padding: 0.7rem; border: 2px solid #00aaff; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); transition: border-color 0.3s ease-in-out;">
+                    <option value="">All Subjects</option>
+                    {% for subject in subjects %}
+                        <option value="{{ subject.Subject_name }}">{{ subject.Subject_name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="chapterFilter" class="form-label" style="font-size: 1.2rem; color: #333; font-weight: bold;">Select Chapter:</label>
+                <select id="chapterFilter" class="form-select form-select-lg" disabled style="border-radius: 12px; padding: 0.7rem; border: 2px solid #00aaff; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); transition: border-color 0.3s ease-in-out;">
+                    <option value="">All Chapters</option>
+                </select>
+            </div>
+        </div>
+        <table class="table table-bordered text-center" style="font-size: 1.2rem; border-collapse: separate; border-spacing: 0 15px;">
+            <thead class="table-dark" style="background-color: #00aaff; color: white; font-weight: 600;">
+                <tr>
+                    <th>Name</th>
+                    <th style="width: 15%;">Number of Questions</th>
+                    <th>Date</th>
+                    <th>Time Duration</th>
+                    <th>Action</th>
+                    <th>Status</th>
+                    <th>Last Attempted On</th>
+                    <th>Last Attempted Time</th>
+                </tr>
+            </thead>
+            <tbody id="quizList">
+                {% for quiz in quizzes %}
+                    <tr class="quiz-item" data-subject="{{ quiz.Subject_name }}" data-chapter="{{ quiz.Chapter_Name }}" style="transition: transform 0.4s ease-in-out, opacity 0.4s;">
+                        <td>{{ quiz.Quiz_Name }}</td>
+                        <td style="width: 15%;">{{ quiz.num_questions }}</td>
+                        <td>{{ quiz.Quiz_Date }}</td>
+                        <td>{{ quiz.Quiz_Time }}</td>
+                        <td>
+                            <button class="btn btn-info btn-sm mb-2" onclick="viewQuiz('{{ quiz.Quiz_ID }}')" style="width: 100%; border-radius: 8px; background-color: #17a2b8; color: white; transition: background-color 0.3s; font-size: 1.1rem;">View</button>
+                            <button class="btn btn-success btn-sm start-quiz" data-quiz-id="{{ quiz.Quiz_ID }}" style="width: 100%; border-radius: 8px; background-color: #28a745; color: white; transition: background-color 0.3s; font-size: 1.1rem;">Start</button>
+                        </td>
+                        <td>
+                            {% if quiz.Attempt_Date %}
+                                <span class="badge bg-success" style="border-radius: 20px;">Attempted</span>
+                            {% else %}
+                                <span class="badge bg-secondary" style="border-radius: 20px;">Not Attempted</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if quiz.Attempt_Date %}
+                                {{ quiz.Attempt_Date.strftime('%d-%m-%Y') }}
+                            {% else %}
+                                -
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if quiz.Attempt_Time %}
+                                {{ quiz.Attempt_Time.strftime('%H:%M:%S') }}
+                            {% else %}
+                                -
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+<script>
+    const userName = "{{ user_name }}";
+    document.addEventListener("DOMContentLoaded", function () {
+        const subjectFilter = document.getElementById("subjectFilter");
+        const chapterFilter = document.getElementById("chapterFilter");
+        const quizItems = document.querySelectorAll(".quiz-item");
+        const chaptersBySubject = {};
+        {% for subject in subjects %}
+            chaptersBySubject["{{ subject.Subject_name }}"] = [
+                {% for chapter in chapters if chapter.Subject_ID == subject.Subject_ID %}
+                    "{{ chapter.Chapter_Name }}",
+                {% endfor %}
+            ];
+        {% endfor %}
+        subjectFilter.addEventListener("change", function () {
+            const selectedSubject = this.value;
+            chapterFilter.innerHTML = '<option value="">All Chapters</option>';
+            if (selectedSubject && chaptersBySubject[selectedSubject]) {
+                chaptersBySubject[selectedSubject].forEach(chapter => {
+                    const option = document.createElement("option");
+                    option.value = chapter;
+                    option.textContent = chapter;
+                    chapterFilter.appendChild(option);
+                });
+                chapterFilter.disabled = false;
+            } else {
+                chapterFilter.disabled = true;
+            }
+            filterQuizzes();
+        });
+        function filterQuizzes() {
+            const selectedSubject = subjectFilter.value;
+            const selectedChapter = chapterFilter.value;
+            quizItems.forEach(quiz => {
+                const quizSubject = quiz.getAttribute("data-subject");
+                const quizChapter = quiz.getAttribute("data-chapter");
+                const subjectMatch = selectedSubject === "" || quizSubject === selectedSubject;
+                const chapterMatch = selectedChapter === "" || quizChapter === selectedChapter;
+                if (subjectMatch && chapterMatch) {
+                    quiz.style.display = "table-row";
+                    quiz.style.transform = "scale(1)";
+                    quiz.style.opacity = "1";
+                } else {
+                    quiz.style.display = "none";
+                    quiz.style.transform = "scale(0.8)";
+                    quiz.style.opacity = "0.5";
+                }
+            });
+        }
+        chapterFilter.addEventListener("change", filterQuizzes);
+    });
+    function viewQuiz(quizId) {
+        if (!userName || !quizId) {
+            console.error("Missing userName or quizId:", userName, quizId);
+            return;
+        }
+        window.location.href = `/user-dashboard/${userName}/view_quiz/${quizId}`;
+    }
+    function startQuiz(quizId) {
+        if (!userName || !quizId) {
+            console.error("Missing userName or quizId:", userName, quizId);
+            return;
+        }
+        window.location.href = `/user-dashboard/${userName}/start_quiz/${quizId}`;
+    }
+    document.querySelectorAll('.start-quiz').forEach(button => {
+        button.addEventListener('click', function () {
+            const quizId = this.getAttribute('data-quiz-id');
+            startQuiz(quizId);
+        });
+    });
+</script>
+{% endblock %}

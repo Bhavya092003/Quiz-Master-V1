@@ -1,0 +1,139 @@
+{% extends 'base/base_dashboard.html' %}
+
+{% block mytitle %}
+    Add Quiz
+{% endblock %}
+
+{% block mycontent %}
+<style>
+    body {
+        background-color: #f7f8fa;
+        font-family: 'Arial', sans-serif;
+    }
+    .container {
+        max-width: 600px;
+        margin-top: 3rem;
+    }
+    .card {
+        border-radius: 12px;
+        box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    .form-label {
+        font-weight: bold;
+    }
+    .btn {
+        border-radius: 8px;
+        padding: 8px 15px;
+        font-weight: bold;
+        font-size: 16px;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .btn:hover {
+        transform: scale(1.05);
+        box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    .btn-primary {
+        background-color: #007bff;
+        border: none;
+    }
+    .btn-primary:hover {
+        background-color: #0056b3;
+    }
+    .btn-secondary {
+        background-color: #6c757d;
+        border: none;
+    }
+    .btn-secondary:hover {
+        background-color: #5a6268;
+    }
+    .mb-3 {
+        margin-bottom: 1.5rem;
+    }
+    select, input[type="text"], input[type="date"], input[type="number"] {
+        border-radius: 8px;
+        padding: 10px;
+        font-size: 16px;
+    }
+    .d-flex {
+        gap: 1rem;
+    }
+</style>
+<div class="container mt-4">
+    <h1 class="fw-bold text-center mb-4">New Quiz</h1>
+    <div class="card p-4 shadow-lg mx-auto">
+        <form action="{{ url_for('new_quiz') }}" method="POST">
+            <div class="mb-3">
+                <label for="subjectDropdown" class="form-label">Select Subject:</label>
+                <select id="subjectDropdown" name="subject_id" class="form-select" required>
+                    <option value="">Select Subject</option>
+                    {% for subject in subjects %}
+                        <option value="{{ subject.Subject_ID }}">{{ subject.Subject_name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="chapterDropdown" class="form-label">Select Chapter:</label>
+                <select id="chapterDropdown" name="chapter_id" class="form-select" required disabled>
+                    <option value="">Select a Subject first</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="quiz_name" class="form-label">Quiz Title:</label>
+                <input type="text" name="quiz_name" class="form-control" required>
+            </div>
+            <div class="mb-3">
+                <label for="date" class="form-label">Date:</label>
+                <input type="date" name="date" class="form-control" required>
+            </div>
+            <div class="mb-3">
+                <label for="duration" class="form-label">Duration (minutes):</label>
+                <input type="number" name="duration" class="form-control" required min="1">
+            </div>
+            <div class="d-flex justify-content-between">
+                <input type="submit" class="btn btn-primary" value="Save">
+                <button type="button" onclick="clearFormAndGoBack()" class="btn btn-secondary">Cancel</button>
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+    function clearFormAndGoBack() {
+        window.location.href = "/admin-dashboard/quiz_dashboard";
+    }
+    document.addEventListener("DOMContentLoaded", function () {
+        const subjectDropdown = document.getElementById("subjectDropdown");
+        const chapterDropdown = document.getElementById("chapterDropdown");
+        subjectDropdown.addEventListener("change", function () {
+            const subjectId = this.value;
+            chapterDropdown.innerHTML = '<option value="">Loading...</option>';
+            chapterDropdown.disabled = true;
+            if (subjectId) {
+                fetch(`/admin-dashboard/quiz_management/new_quiz/get_chapters/${subjectId}`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error("Network response was not ok");
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        chapterDropdown.innerHTML = '<option value="">Select Chapter</option>';
+                        data.forEach(chapter => {
+                            let option = document.createElement("option");
+                            option.value = chapter.id;
+                            option.textContent = chapter.name;
+                            chapterDropdown.appendChild(option);
+                        });
+                        chapterDropdown.disabled = false;
+                    })
+                    .catch(error => {
+                        console.error("Error fetching chapters:", error);
+                        chapterDropdown.innerHTML = '<option value="">Error loading chapters</option>';
+                    });
+            } else {
+                chapterDropdown.innerHTML = '<option value="">Select a Subject first</option>';
+                chapterDropdown.disabled = true;
+            }
+        });
+    });
+</script>
+{% endblock %}

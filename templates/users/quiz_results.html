@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ quiz.Quiz_Name }} - Results</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            background-color: #121212;
+            color: #ffffff;
+            font-family: 'Roboto', sans-serif;
+        }
+        h2, h3 {
+            text-align: center;
+            color: #00bcd4;
+        }
+        .quiz-results-container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 30px;
+            background: #1e1e1e;
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            animation: fadeIn 1s ease-out;
+        }
+        .question-container {
+            background: #292929;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        .question-container h4 {
+            color: #00bcd4;
+            font-size: 1.4rem;
+            margin-bottom: 10px;
+        }
+        .question-container p {
+            font-size: 1.1rem;
+            color: #f4f4f4;
+            line-height: 1.5;
+        }
+        .response {
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 10px;
+            font-size: 1.1rem;
+        }
+        .response.selected {
+            background-color: #4caf50;
+            color: white;
+        }
+        .response.not-selected {
+            background-color: #f44336;
+            color: white;
+        }
+        @keyframes fadeIn {
+            0% { opacity: 0; transform: translateY(50px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+        .back-button {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background-color: #00bcd4;
+            color: white;
+            text-align: center;
+            border-radius: 8px;
+            margin-top: 30px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .back-button:hover {
+            background-color: #0097a7;
+        }
+    </style>
+</head>
+<body>
+    <div class="quiz-results-container">
+        <h2>{{ quiz.Quiz_Name }} - Results</h2>
+        <h3>User: {{ user_name }}</h3>       
+        {% for question in questions %}
+            <div class="question-container">
+                <h4>{{ question.Question_Statement }}</h4>
+                <p>Your answer: 
+                    {% set selected_option = responses[question.Question_ID] %}
+                    {% if selected_option %}
+                        {% for option in question.Options %}
+                            {% if option.Option_ID == selected_option %}
+                                <span class="response selected">{{ option.Option_Text }}</span>
+                            {% endif %}
+                        {% endfor %}
+                    {% else %}
+                        <span class="response not-selected">No answer selected</span>
+                    {% endif %}
+                </p>
+            </div>
+        {% endfor %}
+        <a href="/user-dashboard/{{ user_name }}" class="back-button">Back to Dashboard</a>
+    </div>
+</body>
+</html>
