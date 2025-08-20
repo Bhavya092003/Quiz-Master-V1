@@ -15,7 +15,7 @@ Quiz Master - V1 is a web-based exam preparation platform built with Flask. It p
 3) Add, update, or remove users
 4) Analyze quiz results with summary charts
 
-🖥️ Tech Stack
+🖥️ Tech Stack:-
 1) Backend: Flask (Python)
 2) Frontend: HTML, CSS, Bootstrap, Jinja2
 3) Database: SQLite (programmatically generated)
