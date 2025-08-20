@@ -2,7 +2,7 @@
 Quiz Master - V1 is a web-based exam preparation platform built with Flask. It provides a multi-user environment where students can attempt quizzes, track scores, and improve their knowledge, while administrators can manage subjects, chapters, and quizzes with ease.
 
 **🚀 Features**
-👨‍🎓 For Users:- 
+👨‍🎓 For Users:-
 1) Register and log in securely
 2) Explore subjects and chapters
 3) Attempt timed quizzes with instant evaluation
