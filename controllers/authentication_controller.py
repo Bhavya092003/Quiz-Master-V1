@@ -18,8 +18,8 @@ def login():
                 return redirect(url_for('user_dashboard', user_name=user.Full_name))
         else:
             error = "Invalid email or password"
-            return render_template('login.html', error=error)
-    return render_template('login.html')
+            return render_template('index.html', error=error)
+    return render_template('index.html')
 
 def registration():
     if request.method == 'POST':
