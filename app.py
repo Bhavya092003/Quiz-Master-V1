@@ -155,15 +155,15 @@ def user_summary(user_name):
 def quizResults(quiz_id):
     return quiz_results(quiz_id)
 
+with app.app_context():
+    db.create_all()
+    
+    create_admin(
+        email="admin@admin.com",
+        full_name="Admin",
+        password="admin",
+        dob=date(1995, 5, 15),
+        qualification="Master's Degree"
+    )
 if __name__=='__main__':
-    with app.app_context():
-        db.create_all()
-        
-        create_admin(
-            email="admin@admin.com",
-            full_name="Admin",
-            password="admin",
-            dob=date(1995, 5, 15),
-            qualification="Master's Degree"
-        )
     app.run(debug=True)
