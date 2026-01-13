@@ -11,6 +11,8 @@ from models.users_model import Users
 from models.quiz_model import Quizzes
 from models.scores_model import Scores
 from models.response_model import Response
+from datetime import date
+from werkzeug.security import generate_password_hash
 import pdb
 
 app = Flask(__name__, template_folder='templates')
@@ -19,6 +21,28 @@ app.secret_key = 'some key'
 
 db.init_app(app)
 migrate.init_app(app, db)
+
+def create_admin(email, full_name, password, dob, qualification=None):
+    existing_user = Users.query.filter_by(Email=email).first()
+    if existing_user:
+        print(f"User with email {email} already exists.")
+        return None
+    
+    new_user = Users(
+        Email=email,
+        Full_name=full_name,
+        Password=password,
+        DOB=dob,
+        Qualification=qualification
+    )
+    
+    new_user.set_password(password)
+    
+    db.session.add(new_user)
+    db.session.commit()
+    
+    print(f"User {full_name} created successfully!")
+    return new_user
 
 @app.route("/", methods=["GET", "POST"])
 def login_route():
@@ -119,7 +143,6 @@ def submitQuiz(user_name, quiz_id):
 def submitResponse(user_name, quiz_id):
     return submit_response(user_name, quiz_id)
 
-
 @app.route('/user-dashboard/<user_name>/scores', methods=['GET'])
 def userScores(user_name):
     return user_scores(user_name)
@@ -128,12 +151,19 @@ def userScores(user_name):
 def user_summary(user_name):
     return userSummary(user_name)
 
-
-
-
 @app.route('/quiz-results/<int:quiz_id>', methods=["GET", "POST"])
 def quizResults(quiz_id):
     return quiz_results(quiz_id)
 
 if __name__=='__main__':
+    with app.app_context():
+        db.create_all()
+        
+        create_admin(
+            email="admin@admin.com",
+            full_name="Admin",
+            password="admin",
+            dob=date(1995, 5, 15),
+            qualification="Master's Degree"
+        )
     app.run(debug=True)
