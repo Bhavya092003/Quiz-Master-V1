@@ -22,7 +22,11 @@ Quiz Master - V1 is a web-based exam preparation platform built with Flask. It p
 4) Other: Client-side validation, data visualization
 
 
+**LIVE ON**
+https://quiz-master-v1-6du9.onrender.com
+
 Admin Credentials:-
+
 Username = admin@admin.com
 
 Password = admin
