@@ -1,6 +1,16 @@
 # Quiz-Master-V1
 Quiz Master - V1 is a web-based exam preparation platform built with Flask. It provides a multi-user environment where students can attempt quizzes, track scores, and improve their knowledge, while administrators can manage subjects, chapters, and quizzes with ease.
 
+**LIVE ON**
+https://quiz-master-v1-6du9.onrender.com
+
+Admin Credentials:-
+
+Username = admin@admin.com
+
+Password = admin
+
+
 **🚀 Features**
 
 👨‍🎓 For Users:-
@@ -20,13 +30,3 @@ Quiz Master - V1 is a web-based exam preparation platform built with Flask. It p
 2) Frontend: HTML, CSS, Bootstrap, Jinja2
 3) Database: SQLite (programmatically generated)
 4) Other: Client-side validation, data visualization
-
-
-**LIVE ON**
-https://quiz-master-v1-6du9.onrender.com
-
-Admin Credentials:-
-
-Username = admin@admin.com
-
-Password = admin
